@@ -1,4 +1,9 @@
-#include <stdio.h>
+/*!
+ * exbuffer.c
+ * yoyo 2013 https://github.com/play175/exbuffer.c
+ * new BSD Licensed
+ */
+ #include <stdio.h>
 #include <stdlib.h>
 //#include <string.h>
 #include <math.h>
