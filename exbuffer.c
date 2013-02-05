@@ -3,10 +3,10 @@
  * yoyo 2013 https://github.com/play175/exbuffer.c
  * new BSD Licensed
  */
- #include <stdio.h>
-#include <stdlib.h>
-//#include <string.h>
-#include <math.h>
+ #include <cstdio>
+#include <cstdlib>
+//#include <cstring>
+#include <cmath>
 
 #ifdef WIN32
 #include <winsock.h>
