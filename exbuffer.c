@@ -5,16 +5,8 @@
  */
  #include <cstdio>
 #include <cstdlib>
-//#include <cstring>
+#include <cstring>
 #include <cmath>
-
-#ifdef WIN32
-#include <winsock.h>
-#endif
-
-#ifdef _LINUX
-#include <arpa/inet.h>
-#endif
 
 #ifndef EXBUFFER_H
 #define EXBUFFER_H
@@ -27,12 +19,85 @@ extern "C"
 /*!< 每次扩展缓冲区的单位(字节) */
 #define EXTEND_BYTES 512
 
+//第一位：是否检查过(0/1)，第二位：当前主机字节序如果是little则为1否则为0
+static unsigned char HOST_ENDIAN_LITTLE = 0;
+
 /*!< 字节序定义 */
 enum exbuffer_endian
 {
 	EXBUFFER_BIG_ENDIAN,
 	EXBUFFER_LITTLE_ENDIAN
 };
+
+void check_host_endian()
+{
+	if(HOST_ENDIAN_LITTLE & 0x01 == 0x01)
+	{
+		return;
+	}
+	HOST_ENDIAN_LITTLE = HOST_ENDIAN_LITTLE|0x01;
+	unsigned short int i =0x1234;
+	unsigned char* p = (unsigned char*)&i;
+	if(*p == 0x12)
+	{
+		//printf(">>big endian\n");
+		HOST_ENDIAN_LITTLE = HOST_ENDIAN_LITTLE ^ (~HOST_ENDIAN_LITTLE & (0x00<<1));
+	}
+	else
+	{
+		//printf(">>little endian\n");
+		HOST_ENDIAN_LITTLE = HOST_ENDIAN_LITTLE ^ (~HOST_ENDIAN_LITTLE & (0x01<<1));
+	}
+	free(p);
+	p = NULL;
+}
+
+unsigned long ntohl(unsigned long x,exbuffer_endian endian)
+{
+	check_host_endian();
+
+	if(
+		(endian == EXBUFFER_BIG_ENDIAN  
+		&& (HOST_ENDIAN_LITTLE & 0x0100 == 0x0000)//big endian
+		)
+		||(endian == EXBUFFER_LITTLE_ENDIAN  
+		&& (HOST_ENDIAN_LITTLE & 0x0100 == 0x0100)//little endian
+		)
+	)
+	{
+		return x;
+	}
+	
+	return
+	((unsigned long)(	\
+        (((unsigned long)(x) & (unsigned long)0x000000ffUL) << 24) |	 \
+        (((unsigned long)(x) & (unsigned long)0x0000ff00UL) <<  8) |	 \
+        (((unsigned long)(x) & (unsigned long)0x00ff0000UL) >>  8) |	 \
+        (((unsigned long)(x) & (unsigned long)0xff000000UL) >> 24)));
+}
+
+unsigned short ntohs(unsigned short x,exbuffer_endian endian)
+{
+	check_host_endian();
+
+	if(
+		(endian == EXBUFFER_BIG_ENDIAN  \
+		&& (HOST_ENDIAN_LITTLE & 0x0100 == 0x0000)//big endian
+		)
+		||(endian == EXBUFFER_LITTLE_ENDIAN  \
+		&& (HOST_ENDIAN_LITTLE & 0x0100 == 0x0100)//little endian
+		)
+	)
+	{
+		return x;
+	}
+	
+	return
+	((unsigned short)(	\
+        (((unsigned short)(x) & (unsigned short)0x00ffU) << 8) |	 \
+        (((unsigned short)(x) & (unsigned short)0xff00U) >> 8)));
+}
+
 
 /*!< exbuffer_t数据结构 */
 typedef struct exbuffer_value
@@ -162,14 +227,7 @@ void exbuffer_proc(exbuffer_t* value)
 				} headS;
 				headS.bytes[0] = bytes[0];
 				headS.bytes[1] = bytes[1];
-				if(value->endian == EXBUFFER_BIG_ENDIAN)
-				{
-					value->dlen = ntohs(headS.val);//把网络字节序换成主机字节序
-				}
-				else
-				{
-					value->dlen = headS.val;
-				}
+				value->dlen = ntohs(headS.val,value->endian);//把网络字节序换成主机字节序
 			}
 			else
 			{
@@ -182,14 +240,7 @@ void exbuffer_proc(exbuffer_t* value)
 				headL.bytes[1] = bytes[1];
 				headL.bytes[2] = bytes[2];
 				headL.bytes[3] = bytes[3];
-				if(value->endian == EXBUFFER_BIG_ENDIAN)
-				{
-					value->dlen = ntohl(headL.val);//把网络字节序换成主机字节序
-				}
-				else
-				{
-					value->dlen = headL.val;
-				}
+				value->dlen = ntohl(headL.val,value->endian);//把网络字节序换成主机字节序
 			}
 			//exbuffer_printHex(bytes,2);
 			free(bytes);

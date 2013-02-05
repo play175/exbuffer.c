@@ -6,11 +6,15 @@ void recvHandle(unsigned char *rbuf,size_t len)
 	exbuffer_printHex(rbuf,len);
 }
 
+
 int main(int argc, char **argv)
 {
 	exbuffer_t* value;
 	value = exbuffer_new();
 	value->recvHandle = recvHandle;
+
+	//test ntohl
+	//printf("%d\n",ntohl(1,EXBUFFER_LITTLE_ENDIAN));
 
 	unsigned char buf[] = {0,2,3,4,0,1,5,0};
 	exbuffer_put(value,(unsigned char*)buf,0,8);
@@ -26,7 +30,7 @@ int main(int argc, char **argv)
 	printf("缓冲区:\n");
 	exbuffer_dump(value);
 	exbuffer_free(&value);
-
+	system("pause");
 	//getchar();
 	return EXIT_SUCCESS;
 }
