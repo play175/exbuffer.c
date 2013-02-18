@@ -6,7 +6,7 @@ LD=gcc     # 链接器
 
 # 配置工具链的调用参数
 ASFLAGS=-g
-CCFLAGS=-g -Wno-unknown-pragmas -fexec-charset=GBK -finput-charset=UTF-8 -lws2_32 
+CCFLAGS=-g -Wno-unknown-pragmas -fexec-charset=GBK -finput-charset=UTF-8
 RCFLAGS=
 LDFLAGS=
 
