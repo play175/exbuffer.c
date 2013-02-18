@@ -3,7 +3,7 @@
 void recvHandle(unsigned char *rbuf,size_t len)
 {
 	printf("收到数据:%d\n",len);
-	exbuffer_printHex(rbuf,len);
+	exbuffer_printHex(rbuf);
 }
 
 
