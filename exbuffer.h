@@ -33,6 +33,21 @@ typedef struct exbuffer_value
     size_t dlen;/*!< 本次数据包长度 */
 	unsigned char* buffer;/*!< 缓冲区 */
 	size_t bufferlen;/*!< 缓冲区长度 */
+
+    /**< 读包长临时用的数据 */
+    unsigned char *headBytes;
+	union HeadBytesS
+    {
+        unsigned char bytes[2];
+        unsigned short val;
+    } headS;
+
+    union HeadBytesL
+    {
+        unsigned char bytes[4];
+        unsigned long val;
+    } headL;
+
 	void (*recvHandle)(unsigned char*, size_t);/*!< 接收到数据时的回调函数指针 */
 } exbuffer_t;
 
