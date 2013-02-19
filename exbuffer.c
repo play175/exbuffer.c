@@ -96,6 +96,8 @@ exbuffer_t* exbuffer_new()
 	value->dlen = 0;
 	value->recvHandle = NULL;
 
+	value->headBytes = (unsigned char *)malloc(4);
+
 	value->buffer = (unsigned char*)malloc(value->bufferlen);
 	//memset(value->buffer,0,value->bufferlen);
 
@@ -143,6 +145,8 @@ void exbuffer_proc(exbuffer_t* value)
 {
 	unsigned short count = 0;
 	size_t i;
+	unsigned char rlen = 0;
+
 	while(1)
 	{
 		count++;
@@ -160,13 +164,12 @@ void exbuffer_proc(exbuffer_t* value)
 				//printf("连包头都读不了:%d\n",value->dlen);
 				break;//连包头都读不了
 			}
-			unsigned char *bytes = (unsigned char *)malloc(value->headLen);
 			if(value->bufferlen - value->readOffset >= value->headLen)//***********[**]
 			{
 				//printf("***********[**]\n");
 				for(i=0;i<value->headLen;i++)
 				{
-					bytes[i] = value->buffer[value->readOffset+i];
+					value->headBytes[i] = value->buffer[value->readOffset+i];
 				}
 				value->readOffset += value->headLen;
 				//printf("value->readOffset=%d\n",value->readOffset);
@@ -174,47 +177,34 @@ void exbuffer_proc(exbuffer_t* value)
 			else //*]**----------********[*
 			{
 				//printf("*]**----------********[*\n");
-				unsigned char rlen = 0;
 				for(i = 0;i<(value->bufferlen - value->readOffset);i++)
 				{
-					bytes[i] = value->buffer[value->readOffset+i];
+					value->headBytes[i] = value->buffer[value->readOffset+i];
 					rlen++;
 				}
 				value->readOffset = 0;
 				for(i = 0;i<(value->headLen - rlen);i++)
 				{
-					bytes[rlen+i] = value->buffer[value->readOffset+i];
+					value->headBytes[rlen+i] = value->buffer[value->readOffset+i];
 				}
 				value->readOffset += (value->headLen - rlen);
 			}
 			//解析包体长度
 			if(value->headLen==2)
 			{
-				union HeadBytesS
-				{
-					unsigned char bytes[2];
-					unsigned short val;
-				} headS;
-				headS.bytes[0] = bytes[0];
-				headS.bytes[1] = bytes[1];
-				value->dlen = ntohs(headS.val,value->endian);//把网络字节序换成主机字节序
+				value->headS.bytes[0] = value->headBytes[0];
+				value->headS.bytes[1] = value->headBytes[1];
+				value->dlen = ntohs(value->headS.val,value->endian);//把网络字节序换成主机字节序
 			}
 			else
 			{
-				union HeadBytesL
-				{
-					unsigned char bytes[4];
-					unsigned long val;
-				} headL;
-				headL.bytes[0] = bytes[0];
-				headL.bytes[1] = bytes[1];
-				headL.bytes[2] = bytes[2];
-				headL.bytes[3] = bytes[3];
-				value->dlen = ntohl(headL.val,value->endian);//把网络字节序换成主机字节序
+				value->headL.bytes[0] = value->headBytes[0];
+				value->headL.bytes[1] = value->headBytes[1];
+				value->headL.bytes[2] = value->headBytes[2];
+				value->headL.bytes[3] = value->headBytes[3];
+				value->dlen = ntohl(value->headL.val,value->endian);//把网络字节序换成主机字节序
 			}
-			//exbuffer_printHex(bytes,2);
-			free(bytes);
-			bytes = NULL;
+			//exbuffer_printHex(value->headBytes,2);
 			//printf("value->dlen=%d\n",value->dlen);
 			//printf("value->readOffset=%d\n",value->readOffset);
 		}
