@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1361242610 source:e:\workspace\codeblocks\bufftest\main.c
+	"exbuffer.h"
+
+1361246591 source:e:\workspace\codeblocks\bufftest\exbuffer.c
+	"exbuffer.h"
+
+1361201158 e:\workspace\codeblocks\bufftest\exbuffer.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<math.h>
+
+1361242528 e:\workspace\codeblocks\bufftest\exbuffer.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<math.h>
+
