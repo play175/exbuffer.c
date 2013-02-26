@@ -2,7 +2,7 @@
 
 void recvHandle(unsigned char *rbuf,size_t len)
 {
-	printf("ÊÕµ½Êý¾Ý:%d\n",len);
+	printf("æ”¶åˆ°æ•°æ®:%d\n",len);
 	exbuffer_printHex(rbuf,len);
 }
 
@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 {
 	exbuffer_t* value;
 	value = exbuffer_new();
-	//value->headLen = 2;//ÉèÖÃ°üÍ·³¤¶È£¬Ä¬ÈÏÊÇ2£¨2¡¢4·Ö±ð¶ÔÓ¦shortºÍint£¬¿É±íÊ¾65535/ÒÔ¼°2~32´Î·½³¤¶ÈµÄÊý¾Ý£©
+	//value->headLen = 2;//è®¾ç½®åŒ…å¤´é•¿åº¦ï¼Œé»˜è®¤æ˜¯2ï¼ˆ2ã€4åˆ†åˆ«å¯¹åº”shortå’Œintï¼Œå¯è¡¨ç¤º65535/ä»¥åŠ2~32æ¬¡æ–¹é•¿åº¦çš„æ•°æ®ï¼‰
 	value->recvHandle = recvHandle;
 
 	//test ntohl
@@ -26,9 +26,9 @@ int main(int argc, char **argv)
 	unsigned char buf3[] = {6,6,6};
 	exbuffer_put(value,(unsigned char*)buf3,0,3);
 
-	//printf("ÓÐÐ§Êý¾Ý³¤¶È:%d\n",exbuffer_getLen(value));
-	//printf("»º³åÇø³¤¶È:%d\n",value->bufferlen);
-	printf("»º³åÇø:\n");
+	//printf("æœ‰æ•ˆæ•°æ®é•¿åº¦:%d\n",exbuffer_getLen(value));
+	//printf("ç¼“å†²åŒºé•¿åº¦:%d\n",value->bufferlen);
+	printf("ç¼“å†²åŒº:\n");
 	exbuffer_dump(value,value->bufferlen);
 	exbuffer_free(&value);
 	//system("pause");
