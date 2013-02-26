@@ -13,9 +13,9 @@ LDFLAGS=
 OUTPUT=./
 SRC=./
 # 我们目标，可用'\'换行
-SOURCE=main.c 
+SOURCE=test.c 
 
-TARGET=main.exe
+TARGET=test.exe
 
 # 如何编译各种目标的过程
 
