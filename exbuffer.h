@@ -16,30 +16,30 @@ extern "C"
 {
 #endif
 
-/*!< æ¯æ¬¡æ‰©å±•ç¼“å†²åŒºçš„å•ä½(å­—èŠ‚) */
+/*!< Ã¿´ÎÀ©Õ¹»º³åÇøµÄµ¥Î»(×Ö½Ú) */
 #define EXTEND_BYTES 512
 
 
-/*!< å­—èŠ‚åºå®šä¹‰ */
+/*!< ×Ö½ÚÐò¶¨Òå */
 enum exbuffer_endian
 {
 	EXBUFFER_BIG_ENDIAN,
 	EXBUFFER_LITTLE_ENDIAN
 };
 
-/*!< exbuffer_tæ•°æ®ç»“æž„ */
+/*!< exbuffer_tÊý¾Ý½á¹¹ */
 typedef struct exbuffer_value
 {
-	unsigned char headLen;/*!< åŒ…å¤´é•¿åº¦ï¼š2/4 */
+	unsigned char headLen;/*!< °üÍ·³¤¶È£º2/4 */
     enum exbuffer_endian endian;/*!<  */
     size_t readOffset;/*!<  */
     size_t putOffset;/*!<  */
-    size_t dlen;/*!< æœ¬æ¬¡æ•°æ®åŒ…é•¿åº¦ */
-	unsigned char* buffer;/*!< ç¼“å†²åŒº */
-	size_t bufferlen;/*!< ç¼“å†²åŒºé•¿åº¦ */
+    size_t dlen;/*!< ±¾´ÎÊý¾Ý°ü³¤¶È */
+	unsigned char* buffer;/*!< »º³åÇø */
+	size_t bufferlen;/*!< »º³åÇø³¤¶È */
 	size_t packetLen;
-	unsigned char *packet;/*!< åŒ…ç¼“å†² */
-    /**< è¯»åŒ…é•¿ä¸´æ—¶ç”¨çš„æ•°æ® */
+	unsigned char *packet;/*!< °ü»º³å */
+    /**< ¶Á°ü³¤ÁÙÊ±ÓÃµÄÊý¾Ý */
     unsigned char *headBytes;
 	union HeadBytesS
     {
@@ -53,32 +53,32 @@ typedef struct exbuffer_value
         unsigned long val;
     } headL;
 
-	void (*recvHandle)(unsigned char*, size_t);/*!< æŽ¥æ”¶åˆ°æ•°æ®æ—¶çš„å›žè°ƒå‡½æ•°æŒ‡é’ˆ */
+	void (*recvHandle)(unsigned char*, size_t);/*!< ½ÓÊÕµ½Êý¾ÝÊ±µÄ»Øµ÷º¯ÊýÖ¸Õë */
 } exbuffer_t;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/*!< åˆ›å»ºä¸€ä¸ªæ–°çš„exbuffer_tæ•°æ®ç»“æž„ */
+/*!< ´´½¨Ò»¸öÐÂµÄexbuffer_tÊý¾Ý½á¹¹ */
 exbuffer_t* exbuffer_new();
 
-/*!< é‡Šæ”¾exbuffer_t */
+/*!< ÊÍ·Åexbuffer_t */
 void exbuffer_free(exbuffer_t** value);
 
-/*!< æ‰“å°å†…å­˜æ•°æ® */
+/*!< ´òÓ¡ÄÚ´æÊý¾Ý */
 void exbuffer_printHex(unsigned char* bytes,unsigned short len);
 
-/*!< æ‰“å°exbuffer_tä¸­çš„ç¼“å†²åŒºå†…å­˜(æœ€å¤šæ‰“å°50ä¸ªå­—èŠ‚) */
+/*!< ´òÓ¡exbuffer_tÖÐµÄ»º³åÇøÄÚ´æ(×î¶à´òÓ¡50¸ö×Ö½Ú) */
 void exbuffer_dump(exbuffer_t* value,unsigned short len);
 
-/*!< èŽ·å–ç¼“å†²åŒºæœ‰æ•ˆæ•°æ®é•¿åº¦ */
+/*!< »ñÈ¡»º³åÇøÓÐÐ§Êý¾Ý³¤¶È */
 size_t exbuffer_getLen(exbuffer_t* value);
 
-/*!< æŽ¨é€ä¸€æ®µæ•°æ®è¿›åŽ» */
+/*!< ÍÆËÍÒ»¶ÎÊý¾Ý½øÈ¥ */
 void exbuffer_put(exbuffer_t* value, unsigned char* buffer,size_t offset,size_t len);
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-//ç¬¬ä¸€ä½ï¼šæ˜¯å¦æ£€æŸ¥è¿‡(0/1)ï¼Œç¬¬äºŒä½ï¼šå½“å‰ä¸»æœºå­—èŠ‚åºå¦‚æžœæ˜¯littleåˆ™ä¸º1å¦åˆ™ä¸º0
+//µÚÒ»Î»£ºÊÇ·ñ¼ì²é¹ý(0/1)£¬µÚ¶þÎ»£ºµ±Ç°Ö÷»ú×Ö½ÚÐòÈç¹ûÊÇlittleÔòÎª1·ñÔòÎª0
 static unsigned char HOST_ENDIAN_LITTLE = 0;
 
 void check_host_endian()
@@ -104,7 +104,7 @@ void check_host_endian()
 	p = NULL;
 }
 
-unsigned long ntohl(unsigned long x,enum exbuffer_endian endian)
+unsigned long _ntohl(unsigned long x,enum exbuffer_endian endian)
 {
 	check_host_endian();
 	if(
@@ -127,7 +127,7 @@ unsigned long ntohl(unsigned long x,enum exbuffer_endian endian)
         (((unsigned long)(x) & (unsigned long)0xff000000UL) >> 24)));
 }
 
-unsigned short ntohs(unsigned short x,enum exbuffer_endian endian)
+unsigned short _ntohs(unsigned short x,enum exbuffer_endian endian)
 {
 	check_host_endian();
 	if(
@@ -148,7 +148,7 @@ unsigned short ntohs(unsigned short x,enum exbuffer_endian endian)
         (((unsigned short)(x) & (unsigned short)0xff00U) >> 8)));
 }
 
-/*!< åˆ›å»ºä¸€ä¸ªæ–°çš„exbuffer_tæ•°æ®ç»“æž„ */
+/*!< ´´½¨Ò»¸öÐÂµÄexbuffer_tÊý¾Ý½á¹¹ */
 exbuffer_t* exbuffer_new()
 {
     unsigned char headLen = 2;
@@ -175,7 +175,7 @@ exbuffer_t* exbuffer_new()
 	return value;
 };
 
-/*!< é‡Šæ”¾exbuffer_t */
+/*!< ÊÍ·Åexbuffer_t */
 void exbuffer_free(exbuffer_t** value)
 {
 	free ((*value)->packet);
@@ -193,7 +193,7 @@ void exbuffer_free(exbuffer_t** value)
 	(*value) = NULL;
 };
 
-/*!< æ‰“å°å†…å­˜æ•°æ® */
+/*!< ´òÓ¡ÄÚ´æÊý¾Ý */
 void exbuffer_printHex(unsigned char* bytes,unsigned short len)
 {
     if(len>50)len=50;
@@ -205,13 +205,13 @@ void exbuffer_printHex(unsigned char* bytes,unsigned short len)
 	printf("\n");
 };
 
-/*!< æ‰“å°exbuffer_tä¸­çš„ç¼“å†²åŒºå†…å­˜(æœ€å¤šæ‰“å°50ä¸ªå­—èŠ‚) */
+/*!< ´òÓ¡exbuffer_tÖÐµÄ»º³åÇøÄÚ´æ(×î¶à´òÓ¡50¸ö×Ö½Ú) */
 void exbuffer_dump(exbuffer_t* value,unsigned short len)
 {
 	exbuffer_printHex(value->buffer,len);
 };
 
-/*!< èŽ·å–ç¼“å†²åŒºæœ‰æ•ˆæ•°æ®é•¿åº¦ */
+/*!< »ñÈ¡»º³åÇøÓÐÐ§Êý¾Ý³¤¶È */
 size_t exbuffer_getLen(exbuffer_t* value)
 {
    if(value->putOffset>= value->readOffset){ // ------******-------
@@ -232,16 +232,16 @@ void exbuffer_proc(exbuffer_t* value)
 		if(count>1000)
 		{
 			fprintf(stderr,"count>1000\n");
-			break;//1000æ¬¡è¿˜æ²¡è¯»å®Œ??
+			break;//1000´Î»¹Ã»¶ÁÍê??
 		}
 		if(value->dlen == 0)
 		{
 			//printf("value->dlen == 0\n");
-			//printf("æœ‰æ•ˆé•¿åº¦:%d\n",exbuffer_getLen(value));
+			//printf("ÓÐÐ§³¤¶È:%d\n",exbuffer_getLen(value));
 			if(exbuffer_getLen(value) < value->headLen)
 			{
-				//printf("è¿žåŒ…å¤´éƒ½è¯»ä¸äº†:%d\n",value->dlen);
-				break;//è¿žåŒ…å¤´éƒ½è¯»ä¸äº†
+				//printf("Á¬°üÍ·¶¼¶Á²»ÁË:%d\n",value->dlen);
+				break;//Á¬°üÍ·¶¼¶Á²»ÁË
 			}
 			if(value->bufferlen - value->readOffset >= value->headLen)//***********[**]
 			{
@@ -268,12 +268,12 @@ void exbuffer_proc(exbuffer_t* value)
 				}
 				value->readOffset += (value->headLen - rlen);
 			}
-			//è§£æžåŒ…ä½“é•¿åº¦
+			//½âÎö°üÌå³¤¶È
 			if(value->headLen==2)
 			{
 				value->headS.bytes[0] = value->headBytes[0];
 				value->headS.bytes[1] = value->headBytes[1];
-				value->dlen = ntohs(value->headS.val,value->endian);//æŠŠç½‘ç»œå­—èŠ‚åºæ¢æˆä¸»æœºå­—èŠ‚åº
+				value->dlen = _ntohs(value->headS.val,value->endian);//°ÑÍøÂç×Ö½ÚÐò»»³ÉÖ÷»ú×Ö½ÚÐò
 			}
 			else
 			{
@@ -281,7 +281,7 @@ void exbuffer_proc(exbuffer_t* value)
 				value->headL.bytes[1] = value->headBytes[1];
 				value->headL.bytes[2] = value->headBytes[2];
 				value->headL.bytes[3] = value->headBytes[3];
-				value->dlen = ntohl(value->headL.val,value->endian);//æŠŠç½‘ç»œå­—èŠ‚åºæ¢æˆä¸»æœºå­—èŠ‚åº
+				value->dlen = _ntohl(value->headL.val,value->endian);//°ÑÍøÂç×Ö½ÚÐò»»³ÉÖ÷»ú×Ö½ÚÐò
 			}
 			//exbuffer_printHex(value->headBytes,2);
 			//printf("value->dlen=%d\n",value->dlen);
@@ -289,15 +289,15 @@ void exbuffer_proc(exbuffer_t* value)
 		}
 
 		//printf("value->dlen:%d\n",value->dlen);
-		//è¯»åŒ…ä½“
+		//¶Á°üÌå
 		if(exbuffer_getLen(value) >= value->dlen)
-		{	
-			//ç¼“å†²åŒºä¸è¶³æ—¶æ‰©å±•
+		{
+			//»º³åÇø²»×ãÊ±À©Õ¹
 			if(value->packetLen<value->dlen)
 			{
 				size_t rn1 = value->dlen/EXTEND_BYTES;
 				if(value->dlen%EXTEND_BYTES>0)rn1+=1;
-				size_t ex = rn1 * EXTEND_BYTES;//æ¯æ¬¡æ‰©å±•EXTEND_BYTESçš„å€æ•°
+				size_t ex = rn1 * EXTEND_BYTES;//Ã¿´ÎÀ©Õ¹EXTEND_BYTESµÄ±¶Êý
 
 				value->packetLen = ex;
 				free(value->packet);
@@ -347,28 +347,28 @@ void exbuffer_proc(exbuffer_t* value)
 	}
 }
 
-/*!< æŽ¨é€ä¸€æ®µæ•°æ®è¿›åŽ» */
+/*!< ÍÆËÍÒ»¶ÎÊý¾Ý½øÈ¥ */
 void exbuffer_put(exbuffer_t* value, unsigned char* buffer,size_t offset,size_t len)
 {
 	//exbuffer_dump(value);
 	//printf(">>receive bytes:%d\n",len);
-	//å½“å‰ç¼“å†²åŒºå·²ç»ä¸èƒ½æ»¡è¶³æ¬¡æ•°æ•°æ®äº†
+	//µ±Ç°»º³åÇøÒÑ¾­²»ÄÜÂú×ã´ÎÊýÊý¾ÝÁË
 	if(len + exbuffer_getLen(value) > value->bufferlen){
 		size_t rn1 = (len + exbuffer_getLen(value))/EXTEND_BYTES;
 		if((len + exbuffer_getLen(value))%EXTEND_BYTES>0)rn1+=1;
-		size_t ex = rn1 * EXTEND_BYTES;//æ¯æ¬¡æ‰©å±•EXTEND_BYTESçš„å€æ•°
-		size_t exlen = ex - value->bufferlen;//å¢žåŠ çš„é•¿åº¦
+		size_t ex = rn1 * EXTEND_BYTES;//Ã¿´ÎÀ©Õ¹EXTEND_BYTESµÄ±¶Êý
+		size_t exlen = ex - value->bufferlen;//Ôö¼ÓµÄ³¤¶È
 		unsigned char* tmp = (unsigned char*)malloc(ex);
 		//memset(tmp,0,ex);
 		memcpy(tmp,value->buffer,value->bufferlen);
-		//é‡Šæ”¾åŽŸå†…å­˜åŒº
+		//ÊÍ·ÅÔ­ÄÚ´æÇø
 		free(value->buffer);
 		value->buffer = NULL;
-		//é‡æ–°æŒ‡å‘æ–°å†…å­˜
+		//ÖØÐÂÖ¸ÏòÐÂÄÚ´æ
 		value->buffer = tmp;
 		value->bufferlen = ex;
 
-		//æ•´ç†å†…å­˜
+		//ÕûÀíÄÚ´æ
 		if (value->putOffset < value->readOffset) //***** ---********-------
 		{
 			size_t cpylen;
@@ -393,9 +393,9 @@ void exbuffer_put(exbuffer_t* value, unsigned char* buffer,size_t offset,size_t 
 	if(exbuffer_getLen(value) == 0){
 		value->putOffset = value->readOffset = 0;
 	}
-	//åˆ¤æ–­æ˜¯å¦ä¼šå†²ç ´_bufferå°¾éƒ¨
+	//ÅÐ¶ÏÊÇ·ñ»á³åÆÆ_bufferÎ²²¿
 	if((value->putOffset + len) > value->bufferlen){
-		//åˆ†ä¸¤æ¬¡å­˜ ä¸€éƒ¨åˆ†å­˜åœ¨æ•°æ®åŽé¢ ä¸€éƒ¨åˆ†å­˜åœ¨æ•°æ®å‰é¢
+		//·ÖÁ½´Î´æ Ò»²¿·Ö´æÔÚÊý¾ÝºóÃæ Ò»²¿·Ö´æÔÚÊý¾ÝÇ°Ãæ
 		size_t len1 = value->bufferlen - value->putOffset;
 		memcpy(value->buffer + value->putOffset,buffer + offset,len1);
 		offset += len1;
