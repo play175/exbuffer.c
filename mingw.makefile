@@ -23,7 +23,7 @@ TARGET=test.exe
 all: clean $(TARGET) 
 
 $(TARGET) : $(SOURCE)
-	$(CC) $(SOURCE) -o $(TARGET) $(CCFLAGS)
+	$(CC) $(SOURCE) -o $(TARGET) $(CCFLAGS) -s
 
 #make and rm必须tab开头
 clean:
