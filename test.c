@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 	printf("缓冲区:\n");
 	exbuffer_dump(value,value->bufferlen);
 	exbuffer_free(&value);
-	//system("pause");
+	system("pause");
 	//getchar();
 	return EXIT_SUCCESS;
 }
