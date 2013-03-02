@@ -300,8 +300,7 @@ void exbuffer_proc(exbuffer_t* value)
 				size_t ex = rn1 * EXTEND_BYTES;//每次扩展EXTEND_BYTES的倍数
 
 				value->packetLen = ex;
-				free(value->packet);
-				value->packet = (unsigned char *)malloc(value->packetLen);
+				value->packet = (unsigned char *)realloc(value->packet,value->packetLen);
 			}
 
 			if(value->readOffset + value->dlen > value->bufferlen)//***---*****
@@ -358,15 +357,10 @@ void exbuffer_put(exbuffer_t* value, unsigned char* buffer,size_t offset,size_t 
 		if((len + exbuffer_getLen(value))%EXTEND_BYTES>0)rn1+=1;
 		size_t ex = rn1 * EXTEND_BYTES;//每次扩展EXTEND_BYTES的倍数
 		size_t exlen = ex - value->bufferlen;//增加的长度
-		unsigned char* tmp = (unsigned char*)malloc(ex);
-		//memset(tmp,0,ex);
-		memcpy(tmp,value->buffer,value->bufferlen);
-		//释放原内存区
-		free(value->buffer);
-		value->buffer = NULL;
-		//重新指向新内存
-		value->buffer = tmp;
+
+		//扩展内存区
 		value->bufferlen = ex;
+		value->buffer =  (unsigned char*)realloc(value->buffer,value->bufferlen);
 
 		//整理内存
 		if (value->putOffset < value->readOffset) //***** ---********-------
